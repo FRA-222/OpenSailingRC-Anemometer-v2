@@ -114,6 +114,7 @@ void loop() {
 
   // Prepare data for broadcast
   AnemometerData data;
+  data.messageType = 2; // 2 = Anemometer
   data.anemometerId = 1; // Set your anemometer ID here
   WiFi.macAddress(data.macAddress);
   data.windSpeed = windSpeed;

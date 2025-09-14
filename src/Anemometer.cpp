@@ -74,7 +74,7 @@ void Anemometer::update() {
     float voltage   = adc_raw * resolution_ * calibration_factor_ * coefCorrection;
 
     // Simulate a random voltage between 0V and 15V for testing
-    voltage = random(0, 15000) / 1000.0f; // Generate random voltage between 0.0 and 15.0 V
+    voltage = 1.5f + 1.5f * sin(millis() / 10000.0f); // Sinusoidal voltage between 0V and 3V with slow evolution
 
     voltage_ = voltage;
     windSpeed_ = voltageToWindSpeed(voltage);

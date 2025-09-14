@@ -10,6 +10,7 @@
  * @brief Structure containing anemometer data for broadcast
  */
 typedef struct {
+    int8_t messageType;      // 1 = Boat, 2 = Anemometer
     uint32_t anemometerId;   // Unique ID of the anemometer
     uint8_t macAddress[6];   // MAC address of the device
     float windSpeed;         // Wind speed value
