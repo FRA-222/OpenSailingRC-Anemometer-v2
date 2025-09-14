@@ -1,3 +1,43 @@
+// Copyright (C) 2025 Philippe Hubert
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * @file Communication.cpp
+ * @brief Implementation of the Communication class for ESP-NOW wireless communication
+ * @author Philippe Hubert
+ * @date 2025
+ * @copyright GNU General Public License v3.0 or later
+ * 
+ * This file contains the implementation of the Communication class which handles
+ * wireless communication using ESP-NOW protocol for broadcasting anemometer data.
+ * The class provides functionality to initialize ESP-NOW, configure WiFi in station
+ * mode, and broadcast anemometer data to all peers using a broadcast MAC address.
+ * 
+ * Key features:
+ * - ESP-NOW initialization and configuration
+ * - WiFi station mode setup
+ * - Broadcast communication to all peers
+ * - Integrated logging support
+ * - Error handling for communication failures
+ * 
+ * Dependencies:
+ * - ESP-NOW library for wireless communication
+ * - WiFi library for network configuration
+ * - Custom Logger class for debugging and monitoring
+ * - AnemometerData structure for data transmission
+ */
+
 #include "Communication.h"
 
 
@@ -8,7 +48,6 @@ Logger* Communication::logger_ = nullptr;
  * @brief Construct a new Communication object
  * Initializes ESPNow and WiFi in station mode.
  */
-
 Communication::Communication() {
 }
 
@@ -28,6 +67,10 @@ void Communication::log(const String& message) {
     }
 }
 
+/**
+ * @brief Setup Communication
+ * Initializes ESPNow and configures WiFi in station mode.
+ */
 void Communication::setup() {
 
     WiFi.mode(WIFI_STA);

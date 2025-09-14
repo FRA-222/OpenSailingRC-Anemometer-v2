@@ -1,12 +1,52 @@
 
+// Copyright (C) 2025 Philippe Hubert
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
  * @file main.cpp
  * @brief Main entry point for the OpenSailingRC-Anemometer-v2 project.
- *
- * This file initializes the M5Stack Atom S3 device and sets up the Logger instance.
- * The setup() function configures the display and logs a welcome message.
- * The loop() function is currently empty and can be used for main application logic.
+ * 
+ * This application runs on an M5Stack Atom S3 device and implements a wind speed
+ * anemometer with wireless communication capabilities. The system continuously
+ * measures wind speed, displays it on the device screen, logs the data, and
+ * broadcasts the measurements over WiFi.
+ * 
+ * Key Features:
+ * - Real-time wind speed measurement using Anemometer class
+ * - Visual display of wind speed on M5Stack Atom S3 screen
+ * - Configurable logging to Serial, SD card, and/or screen
+ * - Wireless data broadcasting with unique device identification
+ * - 2-second update interval for measurements
+ * 
+ * The main loop performs the following operations:
+ * 1. Updates anemometer readings
+ * 2. Retrieves current wind speed
+ * 3. Logs the measurement
+ * 4. Updates the display
+ * 5. Broadcasts data via WiFi
+ * 6. Waits 2 seconds before next iteration
+ * 
+ * Hardware Requirements:
+ * - M5Stack Atom S3 device
+ * - Compatible anemometer sensor
+ * - WiFi connectivity
+ * 
+ * @author Philippe Hubert
+ * @date 2025
+ * @license GPL v3.0 or later
  */
+
 #include <M5Unified.h>
 #include "Logger.h"
 #include "Anemometer.h"

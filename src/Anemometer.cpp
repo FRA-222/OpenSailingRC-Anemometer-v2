@@ -1,3 +1,55 @@
+// Copyright (C) 2025 Philippe Hubert
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * @file Anemometer.cpp
+ * @brief Implementation of the Anemometer class for wind speed measurement
+ * @author Philippe Hubert
+ * @date 2025
+ * @copyright GNU General Public License v3.0
+ * 
+ * This file implements an anemometer system that measures wind speed by converting
+ * voltage readings from an M5Stack Unit VMeter to wind speed values using a
+ * predefined calibration curve.
+ * 
+ * The system uses:
+ * - M5Stack Unit VMeter (I2C address 0x49) for voltage measurement
+ * - ADS1115 ADC with configurable gain and sampling rate
+ * - Linear interpolation between calibration points for voltage-to-wind-speed conversion
+ * 
+ * Key features:
+ * - Automatic initialization and configuration of the VMeter unit
+ * - Real-time voltage and wind speed measurement
+ * - Calibration correction factor application
+ * - Logging support for debugging and monitoring
+ * - Simulation mode for testing (sinusoidal voltage generation)
+ * 
+ * Hardware configuration:
+ * - I2C communication on Wire1 (pins 2, 1)
+ * - 400kHz I2C frequency
+ * - ADS1115 PGA gain set to 2048 (max 32V input)
+ * - Single-shot conversion mode at 8 SPS rate
+ * 
+ * Calibration:
+ * - Input voltage range: 0-14V
+ * - Output wind speed range: 0-28 m/s
+ * - Linear interpolation between calibration points
+ * - Factory calibration factor from EEPROM
+ * - Additional correction coefficient: 1.0051
+ */
+
+
 #include "Anemometer.h"
 
 // Static member initialization
