@@ -4,90 +4,90 @@
 [![Platform](https://img.shields.io/badge/Platform-ESP32--S3-orange.svg)](https://www.espressif.com/en/products/socs/esp32-s3)
 [![Hardware](https://img.shields.io/badge/Hardware-M5Stack%20Atom%20S3-red.svg)](https://shop.m5stack.com/products/atoms3-dev-kit-w-0-85-inch-screen)
 
-Un anémomètre intelligent basé sur M5Stack Atom S3 pour la mesure et transmission sans fil de la vitesse du vent, conçu pour les applications de voile radiocommandée.
+An intelligent anemometer based on M5Stack Atom S3 for wireless wind speed measurement and transmission, designed for radio-controlled sailing applications.
 
-## 🌟 Fonctionnalités
+## 🌟 Features
 
-- **Mesure en temps réel** : Lecture continue de la vitesse du vent
-- **Affichage visuel** : Interface utilisateur sur écran M5Stack Atom S3
-- **Communication sans fil** : Transmission des données via ESP-NOW
-- **Logging avancé** : Enregistrement sur port série, carte SD et écran
-- **Architecture modulaire** : Code organisé en classes réutilisables
-- **Identification unique** : Chaque dispositif a un ID unique pour le réseau
+- **Real-time measurement**: Continuous wind speed readings
+- **Visual display**: User interface on M5Stack Atom S3 screen
+- **Wireless communication**: Data transmission via ESP-NOW
+- **Advanced logging**: Recording to serial port, SD card, and screen
+- **Modular architecture**: Code organized in reusable classes
+- **Unique identification**: Each device has a unique network ID
 
-## 🛠 Matériel requis
+## 🛠 Hardware Requirements
 
-- **M5Stack Atom S3** - Microcontrôleur principal
-- **M5Stack Voltmeter Unit** - Interface de mesure (ADS1115)
-- **Anémomètre analogique** - Capteur de vitesse du vent
-- **Carte microSD** (optionnelle) - Pour l'enregistrement des données
+- **M5Stack Atom S3** - Main microcontroller
+- **M5Stack Voltmeter Unit** - Measurement interface (ADS1115)
+- **Analog Anemometer** - Wind speed sensor
+- **MicroSD Card** (optional) - For data logging
 
-## 📋 Spécifications techniques
+## 📋 Technical Specifications
 
-- **Processeur** : ESP32-S3 (dual-core, 240MHz)
-- **Connectivité** : WiFi 802.11 b/g/n, ESP-NOW
-- **Résolution ADC** : 16 bits (ADS1115)
-- **Plage de mesure** : 0-100+ m/s (configurable)
-- **Fréquence d'échantillonnage** : 0.5 Hz (2 secondes)
-- **Précision tension** : ±0.1% avec calibration
+- **Processor**: ESP32-S3 (dual-core, 240MHz)
+- **Connectivity**: WiFi 802.11 b/g/n, ESP-NOW
+- **ADC Resolution**: 16-bit (ADS1115)
+- **Measurement Range**: 0-100+ m/s (configurable)
+- **Sample Rate**: 0.5 Hz (2 seconds)
+- **Voltage Accuracy**: ±0.1% with calibration
 
-## 🏗 Architecture du code
+## 🏗 Code Architecture
 
-### Classes principales
+### Main Classes
 
 #### `Anemometer`
-Gère la lecture et conversion des mesures de vitesse du vent
-- Interfaçage avec l'ADC ADS1115
-- Calibration et conversion tension → vitesse
-- Filtrage et lissage des mesures
+Manages wind speed measurement reading and conversion
+- ADS1115 ADC interfacing
+- Calibration and voltage → speed conversion
+- Measurement filtering and smoothing
 
 #### `Communication`
-Gère la communication sans fil ESP-NOW
-- Configuration du réseau WiFi
-- Diffusion des données d'anémomètre
-- Gestion des erreurs de transmission
+Handles ESP-NOW wireless communication
+- WiFi network configuration
+- Anemometer data broadcasting
+- Transmission error handling
 
 #### `Logger`
-Système de logging multi-canal
-- Sortie série pour débogage
-- Affichage sur écran LCD
-- Enregistrement sur carte SD
+Multi-channel logging system
+- Serial output for debugging
+- LCD screen display
+- SD card recording
 
-### Structure des données
+### Data Structure
 
 ```cpp
 typedef struct {
-    uint32_t anemometerId;   // ID unique de l'anémomètre
-    uint8_t macAddress[6];   // Adresse MAC du dispositif
-    float windSpeed;         // Vitesse du vent (m/s)
+    uint32_t anemometerId;   // Unique anemometer ID
+    uint8_t macAddress[6];   // Device MAC address
+    float windSpeed;         // Wind speed (m/s)
 } AnemometerData;
 ```
 
 ## ⚙️ Installation
 
-### Prérequis
+### Prerequisites
 
-1. **PlatformIO** installé dans VS Code
-2. **Pilotes USB** pour M5Stack Atom S3
-3. **Git** pour cloner le dépôt
+1. **PlatformIO** installed in VS Code
+2. **USB drivers** for M5Stack Atom S3
+3. **Git** to clone the repository
 
-### Étapes d'installation
+### Installation Steps
 
 ```bash
-# Cloner le dépôt
+# Clone the repository
 git clone https://github.com/FRA-222/OpenSailingRC-Anemometer-v2.git
 cd OpenSailingRC-Anemometer-v2
 
-# Ouvrir avec PlatformIO
+# Open with PlatformIO
 code .
 
-# Compiler et télécharger
+# Build and upload
 pio run -t upload
 ```
 
-### Dépendances
+### Dependencies
 
-Les bibliothèques suivantes sont automatiquement installées via PlatformIO :
+The following libraries are automatically installed via PlatformIO:
 
 ```ini
 lib_deps = 
@@ -100,12 +100,12 @@ lib_deps =
 
 ## 🔧 Configuration
 
-### Calibration de l'anémomètre
+### Anemometer Calibration
 
-La calibration se fait via les tableaux dans `Anemometer.cpp` :
+Calibration is done via arrays in `Anemometer.cpp`:
 
 ```cpp
-// Courbe de calibration : Tension (mV) → Vitesse (m/s)
+// Calibration curve: Voltage (mV) → Speed (m/s)
 static float INPUT_WIND_SPEED_VS_VOLTAGE[] = {
     2000., 3000., 3500., 3659., 3765., 3800., 
     3829., 3851., 3875., 3900., 3930., 3988., 
@@ -119,48 +119,48 @@ static float OUTPUT_WIND_SPEED_VS_VOLTAGE[] = {
 };
 ```
 
-### Configuration du logging
+### Logger Configuration
 
-Dans `main.cpp`, ajustez les paramètres du logger :
+In `main.cpp`, adjust logger parameters:
 
 ```cpp
-// Logger(SD, Série, Écran)
+// Logger(SD, Serial, Screen)
 Logger logger(false, true, true);
 ```
 
-### ID de l'anémomètre
+### Anemometer ID
 
-Modifiez l'ID unique dans la boucle principale :
+Modify the unique ID in the main loop:
 
 ```cpp
-data.anemometerId = 1; // Changez cette valeur pour chaque dispositif
+data.anemometerId = 1; // Change this value for each device
 ```
 
-## 📊 Utilisation
+## 📊 Usage
 
-### Démarrage
+### Startup
 
-1. Alimenter le M5Stack Atom S3
-2. Le système s'initialise automatiquement
-3. L'écran affiche "Init" puis "Après setup"
-4. Les mesures commencent immédiatement
+1. Power on the M5Stack Atom S3
+2. The system initializes automatically
+3. The screen displays "Init" then "Après setup"
+4. Measurements begin immediately
 
-### Interface utilisateur
+### User Interface
 
-- **Écran principal** : Affichage de la vitesse du vent en m/s
-- **Port série** : Messages de debug et valeurs détaillées
-- **LED** : Indicateur d'état du système
+- **Main screen**: Wind speed display in m/s
+- **Serial port**: Debug messages and detailed values
+- **LED**: System status indicator
 
-### Données transmises
+### Transmitted Data
 
-Les données sont diffusées via ESP-NOW toutes les 2 secondes :
-- ID de l'anémomètre
-- Adresse MAC du dispositif
-- Vitesse du vent actuelle
+Data is broadcast via ESP-NOW every 2 seconds:
+- Anemometer ID
+- Device MAC address
+- Current wind speed
 
-## 🔍 Débogage
+## 🔍 Debugging
 
-### Messages série
+### Serial Messages
 
 ```
 Init
@@ -169,32 +169,32 @@ Wind Speed: 5.42 m/s
 ESP-NOW broadcast success
 ```
 
-### Codes d'erreur
+### Error Codes
 
-- `Unit Vmeter Init Fail` : Problème d'initialisation ADC
-- `Error initializing ESP-NOW` : Erreur communication WiFi
-- `ESP-NOW broadcast failed` : Échec transmission
+- `Unit Vmeter Init Fail`: ADC initialization problem
+- `Error initializing ESP-NOW`: WiFi communication error
+- `ESP-NOW broadcast failed`: Transmission failure
 
-## 🤝 Contribution
+## 🤝 Contributing
 
-Les contributions sont les bienvenues ! Merci de :
+Contributions are welcome! Please:
 
-1. Fork le projet
-2. Créer une branche pour votre fonctionnalité
-3. Commiter vos changements
-4. Pousser vers la branche
-5. Ouvrir une Pull Request
+1. Fork the project
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
-### Standards de code
+### Code Standards
 
-- Commentaires en français
-- Documentation des fonctions publiques
-- Tests unitaires pour les nouvelles fonctionnalités
-- Respect de la convention de nommage existante
+- Comments in French (legacy code)
+- Document public functions
+- Unit tests for new features
+- Follow existing naming conventions
 
-## 📝 Licence
+## 📝 License
 
-Ce projet est sous licence **GNU General Public License v3.0**. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+This project is licensed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE.md) file for details.
 
 ```
 Copyright (C) 2025 Philippe Hubert
@@ -210,31 +210,31 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 ```
 
-## 👤 Auteur
+## 👤 Author
 
-**Philippe Hubert** - *Développement initial* - [FRA-222](https://github.com/FRA-222)
+**Philippe Hubert** - *Initial development* - [FRA-222](https://github.com/FRA-222)
 
-## 🙏 Remerciements
+## 🙏 Acknowledgments
 
-- **M5Stack** pour l'écosystème hardware
-- **Espressif** pour le processeur ESP32-S3
-- **Communauté PlatformIO** pour l'environnement de développement
-- **Communauté OpenSailingRC** pour les tests et retours
+- **M5Stack** for the hardware ecosystem
+- **Espressif** for the ESP32-S3 processor
+- **PlatformIO Community** for the development environment
+- **OpenSailingRC Community** for testing and feedback
 
-## 📚 Documentation supplémentaire
+## 📚 Additional Documentation
 
-- [Wiki du projet](../../wiki)
-- [Guide de calibration](docs/calibration.md)
+- [Project Wiki](../../wiki)
+- [Calibration Guide](docs/calibration.md)
 - [API Reference](docs/api.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
-## 🔗 Liens utiles
+## 🔗 Useful Links
 
-- [Site M5Stack](https://m5stack.com/)
-- [Documentation ESP32-S3](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/)
+- [M5Stack Website](https://m5stack.com/)
+- [ESP32-S3 Documentation](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/)
 - [PlatformIO Documentation](https://docs.platformio.org/)
 - [ESP-NOW Protocol](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_now.html)
 
 ---
 
-*Ce projet fait partie de l'écosystème OpenSailingRC pour la voile radiocommandée.*
+*This project is part of the OpenSailingRC ecosystem for radio-controlled sailing.*
