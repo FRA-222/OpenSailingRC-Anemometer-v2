@@ -1,4 +1,5 @@
 
+
 // Copyright (C) 2025 Philippe Hubert
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -64,10 +65,11 @@ Communication comm;
 
 
 /**
- * @brief Arduino setup function
- *
- * This function runs once at startup. It initializes the M5Stack Atom S3,
- * configures the display, and logs a welcome message to all enabled outputs.
+ * @brief Setup function for the M5Stack Atom S3 anemometer application
+ * 
+ * This function initializes the M5Stack Atom S3 device, configures the display,
+ * sets up logging, and initializes both the Anemometer and Communication modules.
+ * It is called once at the start of the program.
  */
 void setup() {
   // M5Stack Atom S3 initialization
@@ -134,9 +136,31 @@ void displayWindSpeed(float windSpeed) {
 }
 
 /**
- * @brief Arduino loop function
- *
- * This function runs repeatedly after setup(). Place main application logic here.
+ * @brief Main application loop for wind speed monitoring and data broadcasting
+ * 
+ * This function executes continuously after the initial setup is complete. It performs
+ * the core functionality of the anemometer system in a cyclical manner with a 2-second
+ * interval between iterations.
+ * 
+ * The loop performs the following sequence of operations:
+ * 1. Updates the anemometer sensor readings to get fresh wind speed data
+ * 2. Retrieves the current wind speed measurement in m/s
+ * 3. Logs the wind speed value with 2 decimal precision to configured outputs
+ * 4. Updates the M5Stack Atom S3 display with the current wind speed reading
+ * 5. Prepares an AnemometerData structure containing:
+ *    - Message type identifier (2 for anemometer)
+ *    - Unique anemometer ID (currently set to 1)
+ *    - Device MAC address for identification
+ *    - Current wind speed measurement
+ * 6. Broadcasts the data packet via WiFi to connected clients
+ * 7. Waits 2 seconds before starting the next measurement cycle
+ * 
+ * This continuous operation ensures real-time monitoring and transmission of wind
+ * speed data while maintaining a consistent update rate suitable for most sailing
+ * and weather monitoring applications.
+ * 
+ * @note The 2-second delay provides a balance between responsive updates and
+ *       system stability while preventing excessive data transmission
  */
 void loop() {
   
