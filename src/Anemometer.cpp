@@ -126,7 +126,7 @@ void Anemometer::update() {
     float voltage   = adc_raw * resolution_ * calibration_factor_ * coefCorrection;
 
     // Simulate a random voltage between 0V and 15V for testing
-    voltage = 1.5f + 1.5f * sin(millis() / 10000.0f); // Sinusoidal voltage between 0V and 3V with slow evolution
+    //voltage = 1.5f + 1.5f * sin(millis() / 10000.0f); // Sinusoidal voltage between 0V and 3V with slow evolution
 
     voltage_ = voltage;
     windSpeed_ = voltageToWindSpeed(voltage);
@@ -176,7 +176,12 @@ float Anemometer::voltageToWindSpeed(float voltage) {
     // Example conversion: windSpeed = voltage * 10.0;
     // Replace with your own calibration!
 
-    float windSpeed = calculerY(INPUT_WIND_SPEED_VS_VOLTAGE, OUTPUT_WIND_SPEED_VS_VOLTAGE, 15, voltage);
+    float windSpeed = (voltage + 8) / 103.0f; 
+
+    // Convert from km/h to m/s
+    windSpeed = windSpeed * 1000.0f / 3600.0f; // or windSpeed / 3.6f
+    
+    //calculerY(INPUT_WIND_SPEED_VS_VOLTAGE, OUTPUT_WIND_SPEED_VS_VOLTAGE, 15, voltage);
 
     return windSpeed;
 }

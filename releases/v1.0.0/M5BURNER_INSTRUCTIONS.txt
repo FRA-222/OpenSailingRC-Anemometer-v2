@@ -1,0 +1,315 @@
+# 📱 Instructions M5Burner - OpenSailingRC Anemometer v2
+
+**Version** : 1.0.0  
+**Plateforme** : M5Stack AtomS3  
+**Firmware** : ESP32-S3
+
+---
+
+## 🎯 Installation Rapide (3 minutes)
+
+### **Ce dont vous avez besoin**
+- M5Burner installé ([télécharger ici](https://docs.m5stack.com/en/download))
+- M5Stack AtomS3
+- Câble USB-C
+- Le fichier `OpenSailingRC_Anemometer_v1.0.0_MERGED.bin`
+
+---
+
+## 📋 Instructions Détaillées
+
+### **Étape 1 : Préparer M5Burner**
+
+1. **Télécharger M5Burner** si pas encore installé :
+   - Windows : https://docs.m5stack.com/en/download
+   - macOS : https://docs.m5stack.com/en/download
+   - Linux : https://docs.m5stack.com/en/download
+
+2. **Installer les drivers USB** (si nécessaire) :
+   - M5Stack AtomS3 utilise le chip CH9102
+   - Télécharger : https://docs.m5stack.com/en/download
+   - Redémarrer l'ordinateur après installation
+
+3. **Lancer M5Burner**
+
+---
+
+### **Étape 2 : Connecter l'AtomS3**
+
+1. **Connecter l'AtomS3** à votre ordinateur avec le câble USB-C
+
+2. **Vérifier la connexion** :
+   - Windows : Ouvrir Gestionnaire de périphériques → Ports COM
+   - macOS : Ouvrir Terminal → `ls /dev/cu.usb*`
+   - Linux : `ls /dev/ttyUSB*`
+
+3. **Noter le port série** (ex: COM3, /dev/cu.usbserial-XXXX, /dev/ttyUSB0)
+
+---
+
+### **Étape 3 : Configurer M5Burner**
+
+1. **Ouvrir M5Burner**
+
+2. **Aller dans "Custom Firmware"** (en haut de la fenêtre)
+
+3. **Cliquer sur "Browse"** (bouton parcourir)
+
+4. **Sélectionner** le fichier :
+   ```
+   OpenSailingRC_Anemometer_v1.0.0_MERGED.bin
+   ```
+
+5. ⚠️ **IMPORTANT - Changer l'adresse de flash** :
+   - Par défaut, M5Burner affiche : `0x10000`
+   - **VOUS DEVEZ CHANGER** à : **`0x0`**
+   - ❌ Si vous laissez 0x10000 → L'AtomS3 rebootera en boucle
+   - ✅ Avec 0x0 → Tout fonctionne parfaitement
+
+6. ✅ **Cocher "Erase Flash"**
+   - Cette option efface complètement la mémoire flash
+   - Recommandé pour éviter les conflits
+
+7. **Sélectionner le port série**
+   - Choisir le port COM/USB détecté à l'étape 2
+
+8. **Configurer le baud rate** (optionnel)
+   - Valeur recommandée : **115200** (par défaut)
+   - Pour un flash plus rapide : **460800** ou **921600**
+
+---
+
+### **Étape 4 : Flasher le Firmware**
+
+1. **Cliquer sur "BURN"**
+
+2. **Attendre la progression** :
+   ```
+   Connecting...
+   Writing at 0x00000000... (X %)
+   ...
+   Hash of data verified.
+   ```
+
+3. **Temps d'installation** : ~30 secondes à 1 minute
+
+4. **Fin du flash** :
+   ```
+   ✅ Writing at 0x000XXXXX... (100 %)
+   ✅ Hash of data verified.
+   ```
+
+---
+
+### **Étape 5 : Vérification**
+
+1. **L'AtomS3 redémarre automatiquement**
+
+2. **LED RGB** devrait afficher :
+   - **Rouge** : Démarrage
+   - **Bleu** : Mode configuration WiFi
+   - **Vert** : Fonctionnement normal
+
+3. **Test de fonctionnement** :
+   - Appuyer sur le bouton de l'AtomS3
+   - La LED devrait changer de couleur
+   - L'anémomètre devrait commencer à mesurer
+
+---
+
+## 🔧 Configuration WiFi (Première Utilisation)
+
+### **Mode Configuration WiFi Manager**
+
+1. **Au premier démarrage**, l'AtomS3 crée un point d'accès WiFi :
+   - **SSID** : `OpenSailingRC-Anemometer-XXXXXX`
+   - **Pas de mot de passe**
+
+2. **Se connecter au WiFi** de l'AtomS3 depuis votre smartphone/ordinateur
+
+3. **Ouvrir un navigateur** et aller à :
+   ```
+   http://192.168.4.1
+   ```
+
+4. **Configurer le WiFi** :
+   - Sélectionner votre réseau WiFi
+   - Entrer le mot de passe
+   - Cliquer "Save"
+
+5. **L'AtomS3 redémarre** et se connecte à votre réseau
+
+---
+
+## ⚠️ Dépannage
+
+### **Problème : "No serial data received"**
+
+**Causes possibles** :
+- Câble USB défectueux ou "charge only"
+- Drivers CH9102 non installés
+- Port série incorrect
+- AtomS3 non en mode flash
+
+**Solutions** :
+1. Essayer un autre câble USB-C (avec données)
+2. Installer les drivers CH9102
+3. Vérifier le port série dans M5Burner
+4. Maintenir le bouton de l'AtomS3 pendant la connexion
+
+---
+
+### **Problème : AtomS3 reboot en boucle après flash**
+
+**Cause** : Adresse de flash incorrecte (0x10000 au lieu de 0x0)
+
+**Solution** :
+1. Re-flasher avec M5Burner
+2. ⚠️ **Vérifier que l'adresse est bien 0x0**
+3. ✅ Cocher "Erase Flash"
+4. BURN
+
+---
+
+### **Problème : "Hash of data does not match"**
+
+**Cause** : Fichier corrompu ou transfert interrompu
+
+**Solutions** :
+1. Re-télécharger le fichier MERGED.bin
+2. Vérifier l'intégrité avec SHA256 :
+   ```bash
+   shasum -a 256 OpenSailingRC_Anemometer_v1.0.0_MERGED.bin
+   ```
+3. Re-flasher
+
+---
+
+### **Problème : M5Burner ne détecte pas l'AtomS3**
+
+**Solutions** :
+1. **Windows** :
+   - Vérifier dans Gestionnaire de périphériques
+   - Installer manuellement les drivers CH9102
+
+2. **macOS** :
+   - Donner les permissions système à M5Burner
+   - Système → Confidentialité → Accès complet au disque
+
+3. **Linux** :
+   - Ajouter votre utilisateur au groupe `dialout` :
+     ```bash
+     sudo usermod -a -G dialout $USER
+     ```
+   - Redémarrer
+
+---
+
+### **Problème : LED reste rouge après flash**
+
+**Causes possibles** :
+- Bootloader manquant
+- Flash incomplète
+- Erreur matérielle
+
+**Solutions** :
+1. Effacer complètement la flash :
+   ```bash
+   python3 -m esptool --chip esp32s3 --port PORT erase_flash
+   ```
+
+2. Re-flasher le MERGED.bin à 0x0
+
+3. Si le problème persiste, contacter le support
+
+---
+
+## 📊 Résumé Configuration
+
+| Paramètre | Valeur |
+|-----------|--------|
+| **Fichier** | OpenSailingRC_Anemometer_v1.0.0_MERGED.bin |
+| **Adresse** | **0x0** ⚠️ (PAS 0x10000) |
+| **Erase Flash** | ✅ OUI |
+| **Baud Rate** | 115200 (recommandé) |
+| **Chip** | ESP32-S3 |
+| **Taille Flash** | 8 MB |
+
+---
+
+## ⚡ Flash Rapide (Résumé)
+
+```
+1. M5Burner → Custom Firmware
+2. Browse → MERGED.bin
+3. Adresse: 0x0 ⚠️
+4. Erase Flash: ✅
+5. Port: COM/USB
+6. BURN
+7. Attendre ~1 minute
+8. ✅ Terminé!
+```
+
+---
+
+## 📚 Alternative : ESPTool (Ligne de Commande)
+
+Si vous préférez la ligne de commande :
+
+```bash
+# Flash du firmware fusionné
+python3 -m esptool --chip esp32s3 \
+    --port /dev/cu.usbserial-XXXXXXXX \
+    --baud 115200 \
+    write_flash -z \
+    --flash_mode dio \
+    --flash_freq 80m \
+    --flash_size 8MB \
+    0x0 OpenSailingRC_Anemometer_v1.0.0_MERGED.bin
+```
+
+Ou avec les fichiers séparés :
+
+```bash
+python3 -m esptool --chip esp32s3 \
+    --port /dev/cu.usbserial-XXXXXXXX \
+    --baud 115200 \
+    write_flash -z \
+    --flash_mode dio \
+    --flash_freq 80m \
+    --flash_size 8MB \
+    0x0 bootloader.bin \
+    0x8000 partitions.bin \
+    0x10000 firmware.bin
+```
+
+---
+
+## 📞 Support
+
+**Documentation** : `releases/v1.0.0/RELEASE_NOTES.md`  
+**GitHub Issues** : https://github.com/votre-repo/issues  
+**Email** : support@opensailingrc.org
+
+---
+
+## ✅ Checklist de Vérification
+
+Avant de considérer l'installation comme réussie :
+
+- [ ] AtomS3 redémarre sans reboot infini
+- [ ] LED RGB s'allume (rouge/bleu/vert)
+- [ ] Bouton répond (changement couleur LED)
+- [ ] WiFi Manager accessible (192.168.4.1)
+- [ ] Anémomètre mesure les données (vérifier avec moniteur série)
+
+---
+
+**Version** : 1.0.0  
+**Date** : 5 octobre 2025  
+**Auteur** : Philippe Hubert  
+**Plateforme** : M5Stack AtomS3 (ESP32-S3)
+
+---
+
+*Pour toute question, consultez la documentation complète ou ouvrez une issue sur GitHub.* 🚀

@@ -179,8 +179,18 @@ void loop() {
   // Prepare data for broadcast
   AnemometerData data;
   data.messageType = 2; // 2 = Anemometer
-  data.anemometerId = 1; // Set your anemometer ID here
+  
+  // Get MAC address and format as string
   WiFi.macAddress(data.macAddress);
+  String macString = "";
+  for (int i = 0; i < 6; i++) {
+    if (data.macAddress[i] < 16) macString += "0";
+    macString += String(data.macAddress[i], HEX);
+    if (i < 5) macString += ":";
+  }
+  macString.toUpperCase();
+  strcpy(data.anemometerId, macString.c_str());
+  
   data.windSpeed = windSpeed;
 
   // Broadcast the data

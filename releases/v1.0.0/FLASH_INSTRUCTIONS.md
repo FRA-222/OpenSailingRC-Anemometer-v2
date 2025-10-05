@@ -2,18 +2,54 @@
 
 ## 📦 Contenu de la release
 
+- **`OpenSailingRC_Anemometer_v1.0.0_MERGED.bin`** - ⭐ **Firmware fusionné (M5Burner)** - Flash à **0x0**
 - **`firmware.bin`** - Firmware principal de l'anémomètre
 - **`bootloader.bin`** - Bootloader ESP32-S3
 - **`partitions.bin`** - Table des partitions Flash
 
 ## 🛠️ Méthodes de flash
 
-### Méthode 1 : Avec esptool (recommandée)
+### ⭐ Méthode 1 : M5Burner (Recommandée pour utilisateurs non techniques)
+
+**Le plus simple** : Interface graphique, installation en 3 clics !
+
+1. **Télécharger M5Burner** : https://docs.m5stack.com/en/download
+2. **Ouvrir M5Burner** → Custom Firmware → Browse
+3. **Sélectionner** : `OpenSailingRC_Anemometer_v1.0.0_MERGED.bin`
+4. ⚠️ **IMPORTANT** : Changer l'adresse de `0x10000` à **`0x0`**
+5. ✅ Cocher "Erase Flash"
+6. **BURN**
+
+📖 **Instructions détaillées** : Voir `M5BURNER_INSTRUCTIONS.txt`
+
+---
+
+### Méthode 2 : ESPTool - Firmware Fusionné (Ligne de commande)
+
+---
+
+### Méthode 2 : ESPTool - Firmware Fusionné (Ligne de commande)
+
+**Recommandé** : Flash du firmware fusionné en une seule commande
 
 #### Installation d'esptool
 ```bash
 pip install esptool
 ```
+
+#### Flash du firmware fusionné
+```bash
+esptool.py --chip esp32s3 --port /dev/ttyUSB0 --baud 921600 \
+  --before default_reset --after hard_reset write_flash -z \
+  --flash_mode dio --flash_freq 80m --flash_size 8MB \
+  0x0 OpenSailingRC_Anemometer_v1.0.0_MERGED.bin
+```
+
+⚠️ **Note** : Flash à l'adresse **0x0**, pas 0x10000 !
+
+---
+
+### Méthode 3 : ESPTool - Fichiers Séparés (Avancé)
 
 #### Flash complet (tous les binaires)
 ```bash
@@ -33,7 +69,7 @@ esptool.py --chip esp32s3 --port /dev/ttyUSB0 --baud 921600 \
   0x10000 firmware.bin
 ```
 
-### Méthode 2 : Avec PlatformIO
+### Méthode 4 : Avec PlatformIO
 
 1. **Cloner le projet source**
    ```bash
@@ -42,6 +78,11 @@ esptool.py --chip esp32s3 --port /dev/ttyUSB0 --baud 921600 \
    ```
 
 2. **Flash avec PlatformIO**
+   ```bash
+   platformio run --target upload
+   ```
+
+### Méthode 5 : Avec ESP32-S3 Flash Download Tool
    ```bash
    platformio run --target upload
    ```
