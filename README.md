@@ -40,26 +40,34 @@ Manages wind speed measurement reading and conversion
 - ADS1115 ADC interfacing
 - Calibration and voltage → speed conversion
 - Measurement filtering and smoothing
+- Static logger instance with class-level `log()` method
+- Configurable via `setLogger()` static method
 
 #### `Communication`
 Handles ESP-NOW wireless communication
 - WiFi network configuration
 - Anemometer data broadcasting
 - Transmission error handling
+- Static logger instance with class-level `log()` method
+- Configurable via `setLogger()` static method
 
 #### `Logger`
 Multi-channel logging system
 - Serial output for debugging
 - LCD screen display
 - SD card recording
+- Shared across all modules via static references
 
 ### Data Structure
 
 ```cpp
 typedef struct {
-    uint32_t anemometerId;   // Unique anemometer ID
-    uint8_t macAddress[6];   // Device MAC address
-    float windSpeed;         // Wind speed (m/s)
+    int8_t messageType;      // Message type: 1 = Boat, 2 = Anemometer
+    char anemometerId[18];   // MAC address as string (format: "AA:BB:CC:DD:EE:FF")
+    uint8_t macAddress[6];   // Device MAC address (binary)
+    uint32_t sequenceNumber; // Sequence number for packet tracking
+    float windSpeed;         // Wind speed value (m/s)
+    unsigned long timestamp; // Timestamp of the measurement
 } AnemometerData;
 ```
 
@@ -125,7 +133,19 @@ In `main.cpp`, adjust logger parameters:
 
 ```cpp
 // Logger(SD, Serial, Screen)
-Logger logger(false, true, true);
+Logger logger(false, true, false); // SD disabled, Serial enabled, Screen disabled
+```
+
+Then set the logger for each module:
+
+```cpp
+// Set loggers for both classes
+Anemometer::setLogger(logger);
+Communication::setLogger(logger);
+
+// Initialize modules (no logger parameter needed)
+anemometer.setup();
+comm.setup();
 ```
 
 ### Anemometer ID
@@ -142,7 +162,7 @@ data.anemometerId = 1; // Change this value for each device
 
 1. Power on the M5Stack Atom S3
 2. The system initializes automatically
-3. The screen displays "Init" then "Après setup"
+3. The screen displays "Setup started" then "Setup complete"
 4. Measurements begin immediately
 
 ### User Interface
@@ -154,17 +174,20 @@ data.anemometerId = 1; // Change this value for each device
 ### Transmitted Data
 
 Data is broadcast via ESP-NOW every 2 seconds:
-- Anemometer ID
-- Device MAC address
-- Current wind speed
+- **Message Type**: Identifies the device type (2 for Anemometer)
+- **Anemometer ID**: MAC address as formatted string
+- **MAC Address**: Binary MAC address (6 bytes)
+- **Sequence Number**: Packet tracking counter
+- **Wind Speed**: Current wind speed measurement (m/s)
+- **Timestamp**: Measurement timestamp
 
 ## 🔍 Debugging
 
 ### Serial Messages
 
 ```
-Init
-Après setup
+Setup started
+Setup complete
 Wind Speed: 5.42 m/s
 ESP-NOW broadcast success
 ```
@@ -209,6 +232,13 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 ```
+
+### Key Architecture Features
+
+- **Static Logger Pattern**: Both `Anemometer` and `Communication` classes use static logger instances
+- **Simplified Setup**: Module initialization via parameter-free `setup()` methods
+- **Centralized Logging**: Single logger instance shared via static references
+- **Clean API**: Each class provides its own `log()` method for internal use
 
 ## 👤 Author
 
