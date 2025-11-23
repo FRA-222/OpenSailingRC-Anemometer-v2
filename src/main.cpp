@@ -63,6 +63,9 @@ Anemometer anemometer;
 // Create a Communication instance
 Communication comm;
 
+// Sequence number for packet tracking
+uint32_t sequenceNumber = 0;
+
 
 /**
  * @brief Setup function for the M5Stack Atom S3 anemometer application
@@ -191,7 +194,9 @@ void loop() {
   macString.toUpperCase();
   strcpy(data.anemometerId, macString.c_str());
   
+  data.sequenceNumber = sequenceNumber++;
   data.windSpeed = windSpeed;
+  data.timestamp = 0; // Not used - Display will set it upon reception
 
   // Broadcast the data
   comm.broadcast(data);

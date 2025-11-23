@@ -13,7 +13,9 @@ typedef struct {
     int8_t messageType;      // 1 = Boat, 2 = Anemometer
     char anemometerId[18];   // MAC address as string (format: "AA:BB:CC:DD:EE:FF")
     uint8_t macAddress[6];   // MAC address of the device
+    uint32_t sequenceNumber; // Sequence number for packet tracking
     float windSpeed;         // Wind speed value
+    unsigned long timestamp; // Timestamp of the measurement
 } AnemometerData;
 
 /**

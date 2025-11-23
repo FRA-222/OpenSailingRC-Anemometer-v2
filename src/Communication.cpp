@@ -69,12 +69,17 @@ void Communication::log(const String& message) {
 
 /**
  * @brief Setup Communication
- * Initializes ESPNow and configures WiFi in station mode.
+ * Initializes ESPNow and configures WiFi in station mode with maximum power.
  */
 void Communication::setup() {
 
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
+    
+    // Set WiFi to maximum transmission power (20.5 dBm for ESP32)
+    WiFi.setTxPower(WIFI_POWER_19_5dBm);  // Maximum power
+    log("WiFi TX power set to maximum (19.5 dBm)");
+    
     if (esp_now_init() != ESP_OK) {
         log("Error initializing ESP-NOW");
     }
