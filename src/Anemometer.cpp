@@ -60,9 +60,10 @@ Logger* Anemometer::logger_ = nullptr;
 #define M5_UNIT_VMETER_EEPROM_I2C_ADDR      0x53
 #define M5_UNIT_VMETER_PRESSURE_COEFFICIENT 0.015918958F
 
-// Courbe de capacite d un element / Tension (attention !!!!! abscisses identiques interdites)
-static float INPUT_WIND_SPEED_VS_VOLTAGE[]={0.,1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.}; 
-static float OUTPUT_WIND_SPEED_VS_VOLTAGE[]={0.,2.,4.,6.,8.,10.,12.,14.,16.,18.,20.,22.,24.,26.,28.}; 
+// Courbe de calibration anemometre : mV -> km/h (attention !!!!! abscisses identiques interdites)
+static float INPUT_WIND_SPEED_VS_VOLTAGE[]  = {0., 120., 188., 300., 380., 490., 620., 730.};
+static float OUTPUT_WIND_SPEED_VS_VOLTAGE[] = {0.,  10.,  20.,  30.,  40.,  50.,  60.,  70.};
+static const int CALIBRATION_TABLE_SIZE = 8;
 
 
 /**
@@ -173,15 +174,14 @@ float calculerY(float xtab[], float ytab[], int taille, float x) {
  * @note This is a placeholder formula. Adjust according to your anemometer's calibration.
  */
 float Anemometer::voltageToWindSpeed(float voltage) {
-    // Example conversion: windSpeed = voltage * 10.0;
-    // Replace with your own calibration!
+    // Convert voltage from V to mV (calibration table is in mV)
+    float voltage_mV = voltage; // 1000.0f;
 
-    float windSpeed = (voltage + 8) / 103.0f; 
+    // Interpolate on calibration curve: mV -> km/h
+    float windSpeed_kmh = calculerY(INPUT_WIND_SPEED_VS_VOLTAGE, OUTPUT_WIND_SPEED_VS_VOLTAGE, CALIBRATION_TABLE_SIZE, voltage_mV);
 
     // Convert from km/h to m/s
-    windSpeed = windSpeed * 1000.0f / 3600.0f; // or windSpeed / 3.6f
-    
-    //calculerY(INPUT_WIND_SPEED_VS_VOLTAGE, OUTPUT_WIND_SPEED_VS_VOLTAGE, 15, voltage);
+    float windSpeed = windSpeed_kmh / 3.6f;
 
     return windSpeed;
 }
